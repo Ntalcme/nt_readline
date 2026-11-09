@@ -1,8 +1,10 @@
 NAME		:= libnt_readline.a
 TEST		:= nt_readline_test
-CC		:= gcc
+CC			:= gcc
 CFLAGS		:= -std=gnu99 -Wall -Wextra -Werror -pedantic -Wshadow
 CFLAGS		+= -g -MMD -MP -I./include
+SAN			?= 
+CFLAGS		+= $(SAN)
 
 SRC_DIR		:= src
 TEST_DIR	:= test
@@ -20,6 +22,9 @@ RM			:= rm -rf
 
 all: 					$(LIB_DIR)/$(NAME)
 
+debug:
+						$(MAKE) re test SAN=-fsanitize=address
+
 $(LIB_DIR)/$(NAME): 	$(OBJS)
 						@$(MKDIR) $(@D)
 						ar rcs $@ $^
@@ -27,7 +32,7 @@ $(LIB_DIR)/$(NAME): 	$(OBJS)
 test:					$(TEST)
 
 $(TEST): 				$(TEST_OBJS) $(LIB_DIR)/$(NAME)
-						$(CC) $(TEST_OBJS) -L$(LIB_DIR) -lnt_readline -o $@
+						$(CC) $(TEST_OBJS) $(SAN) -L$(LIB_DIR) -lnt_readline -o $@
 
 $(OBJ_DIR)/%.o: 		$(SRC_DIR)/%.c
 						@$(MKDIR) $(@D)
@@ -47,4 +52,4 @@ fclean: 				clean
 
 re: 					fclean all
 
-.PHONY: all test clean fclean re
+.PHONY: all debug test clean fclean re
