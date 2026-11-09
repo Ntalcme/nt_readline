@@ -41,27 +41,27 @@ int nt_buffer_push(t_buffer *buf, const char c)
 
 void nt_buffer_pop(t_buffer *buf)
 {
-    if (buf->len > 0)
-        buf->len--;
+	if (buf->len > 0)
+		buf->len--;
 }
 
 char *nt_buffer_take(t_buffer *buf)
 {
-    char *str;
+	char *str;
 
-    buf->data[buf->len] = '\0';
-    str = buf->data;
-    buf->data = NULL;
-    buf->len = 0;
-    buf->cap = 0;
+	buf->data[buf->len] = '\0';
+	str = buf->data;
+	buf->data = NULL;
+	buf->len = 0;
+	buf->cap = 0;
 
-    return str;
+	return str;
 }
 
 void nt_buffer_free(t_buffer *buf)
 {
-    free(buf->data);
-    buf->data = NULL;
-    buf->len = 0;
-    buf->cap = 0;
+	free(buf->data);
+	buf->data = NULL;
+	buf->len = 0;
+	buf->cap = 0;
 }
