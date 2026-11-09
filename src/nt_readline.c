@@ -18,19 +18,43 @@ typedef enum e_result {
 
 static t_result handle_printable(t_buffer *buf, unsigned char c)
 {
-	if (nt_buffer_push(buf, c) == -1)
+	size_t tail;
+	size_t i;
+
+	if (nt_buffer_insert(buf, c) == -1)
 		return NT_ERROR;
 
-	write(STDOUT_FILENO, &c, 1);
+	/* Redraw the inserted char and everything after it */
+	tail = buf->len - buf->cursor_pos;
+	write(STDOUT_FILENO, buf->data + buf->cursor_pos - 1, tail + 1);
+
+	/* Move the cursor back, just after the inserted char */
+	for (i = 0; i < tail; i++)
+		write(STDOUT_FILENO, "\033[D", 3);
+
 	return NT_CONTINUE;
 }
 
 static t_result handle_backspace(t_buffer *buf)
 {
-	if (buf->len > 0) {
-		nt_buffer_pop(buf);
-		write(STDOUT_FILENO, "\b \b", 3);
-	}
+	size_t tail;
+	size_t i;
+
+	if (buf->cursor_pos == 0)
+		return NT_CONTINUE;
+
+	nt_buffer_delete(buf);
+	tail = buf->len - buf->cursor_pos;
+
+	/* Step left, redraw the tail, blank the leftover last char */
+	write(STDOUT_FILENO, "\b", 1);
+	write(STDOUT_FILENO, buf->data + buf->cursor_pos, tail);
+	write(STDOUT_FILENO, " ", 1);
+
+	/* Put the cursor back at its logical position */
+	for (i = 0; i < tail + 1; i++)
+		write(STDOUT_FILENO, "\033[D", 3);
+
 	return NT_CONTINUE;
 }
 
@@ -44,7 +68,7 @@ static t_result handle_ctrl_d(const t_buffer *buf)
 	return NT_EOF;
 }
 
-static t_result handle_escape(void)
+static t_result handle_escape(t_buffer *buf)
 {
 	unsigned char seq[2];
 
@@ -52,7 +76,25 @@ static t_result handle_escape(void)
 	    read(STDIN_FILENO, &seq[1], 1) != 1)
 		return NT_ERROR;
 
-	/* Arrow keys (ESC [ A/B/C/D) are consumed and ignored for now */
+	if (seq[0] != '[')
+		return NT_CONTINUE;
+
+	switch (seq[1]) {
+	case 'D': /* left */
+		if (buf->cursor_pos > 0) {
+			buf->cursor_pos--;
+			write(STDOUT_FILENO, "\033[D", 3);
+		}
+		break;
+
+	case 'C': /* right */
+		if (buf->cursor_pos < buf->len) {
+			buf->cursor_pos++;
+			write(STDOUT_FILENO, "\033[C", 3);
+		}
+		break;
+	}
+
 	return NT_CONTINUE;
 }
 
@@ -106,7 +148,7 @@ char *nt_readline(const char *prompt)
 		else if (c == NT_KEY_CTRL_D)
 			res = handle_ctrl_d(&buf);
 		else if (c == NT_KEY_ESC)
-			res = handle_escape();
+			res = handle_escape(&buf);
 		else if (c == '\n')
 			res = handle_enter(&buf, &line);
 	}
