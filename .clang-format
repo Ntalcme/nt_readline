@@ -1,13 +1,50 @@
+---
+Language: Cpp
 BasedOnStyle: LLVM
-UseTab: Always
+
+# Indentation: tabs of width 8, as in the Linux kernel style
+UseTab: AlignWithSpaces
 IndentWidth: 8
 TabWidth: 8
-BreakBeforeBraces: Linux
-ColumnLimit: 80
+ContinuationIndentWidth: 8
 IndentCaseLabels: false
+ColumnLimit: 80
+
+# Braces: on a new line for functions only
+BreakBeforeBraces: Linux
+
+# Alignment of consecutive lines
+AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveMacros: Consecutive
+AlignAfterOpenBracket: Align
+AlignOperands: Align
+AlignTrailingComments: true
+AlignEscapedNewlines: Left
+
+# Pointers: char *s, not char* s
+PointerAlignment: Right
+DerivePointerAlignment: false
+
+# Keep short constructs on several lines
+AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: None
+AllowShortBlocksOnASingleLine: Never
+AllowShortCaseLabelsOnASingleLine: false
+
+# Spaces
+SpaceBeforeParens: ControlStatements
+SpaceAfterCStyleCast: true
+SpacesInParentheses: false
+
+# Blank lines and file end
+MaxEmptyLinesToKeep: 1
+KeepEmptyLinesAtTheStartOfBlocks: false
 InsertNewlineAtEOF: true
-AlignConsecutiveDeclarations: Consecutive
-AlignConsecutiveMacros: Consecutive
+
+# Includes
+SortIncludes: CaseSensitive
+IncludeBlocks: Preserve
+
+ReflowComments: true
