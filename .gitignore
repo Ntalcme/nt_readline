@@ -1,0 +1,7 @@
+*.o
+*.d
+compile_commands.json
+lib/
+obj/
+nt_readline_test 
+.cache/
