@@ -15,12 +15,19 @@ char *nt_readline(const char *prompt)
 
 	printf("%s", prompt);
 	fflush(stdout);
-	n = read(STDIN_FILENO, &c, sizeof(char));
-	nt_term_restore();
-	if (n != 1)
-		return NULL;
-
-	printf("%d\n", c);
 	
+	while (1) {
+		n = read(STDIN_FILENO, &c, sizeof(char));
+		if (n != 1)
+			break;
+		if (c >= 32 && c <= 126)
+			write(STDOUT_FILENO, &c, 1);
+		if (c == '\n') {
+			write(STDOUT_FILENO, "\n", 1);
+			break;
+		}
+	}
+
+	nt_term_restore();
 	return NULL;
 }
