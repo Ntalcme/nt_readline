@@ -35,8 +35,8 @@ make fclean   # remove all build artifacts
 - [x] Dynamic line buffer
 - [x] Backspace
 - [x] Ctrl+D (EOF)
-- [ ] Arrow keys (escape sequences)
-- [ ] Cursor movement and insertion in the middle of the line
+- [x] Arrow keys (escape sequences)
+- [x] Cursor movement and insertion in the middle of the line
 - [ ] History
 - [ ] Ctrl+C handling (restore the terminal)
 - [ ] Non-tty input fallback
