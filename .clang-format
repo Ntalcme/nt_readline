@@ -9,3 +9,5 @@ AllowShortIfStatementsOnASingleLine: Never
 AllowShortLoopsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: None
 InsertNewlineAtEOF: true
+AlignConsecutiveDeclarations: Consecutive
+AlignConsecutiveMacros: Consecutive
