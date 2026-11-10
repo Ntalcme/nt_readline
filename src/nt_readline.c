@@ -1,5 +1,5 @@
 #include "nt_readline.h"
-#include "buffer.h"
+#include "line_buffer.h"
 #include "terminal.h"
 #include <stdio.h>
 #include <unistd.h>
@@ -16,12 +16,12 @@ typedef enum e_result {
 	NT_ERROR,    /* read or allocation failure */
 } t_result;
 
-static t_result handle_printable(t_buffer *buf, unsigned char c)
+static t_result handle_printable(t_line_buffer *buf, unsigned char c)
 {
 	size_t tail;
 	size_t i;
 
-	if (nt_buffer_insert(buf, c) == -1)
+	if (nt_line_buffer_insert(buf, c) == -1)
 		return NT_ERROR;
 
 	/* Redraw the inserted char and everything after it */
@@ -35,7 +35,7 @@ static t_result handle_printable(t_buffer *buf, unsigned char c)
 	return NT_CONTINUE;
 }
 
-static t_result handle_backspace(t_buffer *buf)
+static t_result handle_backspace(t_line_buffer *buf)
 {
 	size_t tail;
 	size_t i;
@@ -43,7 +43,7 @@ static t_result handle_backspace(t_buffer *buf)
 	if (buf->cursor_pos == 0)
 		return NT_CONTINUE;
 
-	nt_buffer_delete(buf);
+	nt_line_buffer_delete(buf);
 	tail = buf->len - buf->cursor_pos;
 
 	/* Step left, redraw the tail, blank the leftover last char */
@@ -58,7 +58,7 @@ static t_result handle_backspace(t_buffer *buf)
 	return NT_CONTINUE;
 }
 
-static t_result handle_ctrl_d(const t_buffer *buf)
+static t_result handle_ctrl_d(const t_line_buffer *buf)
 {
 	/* Ctrl+D on a non-empty line is ignored */
 	if (buf->len > 0)
@@ -68,7 +68,7 @@ static t_result handle_ctrl_d(const t_buffer *buf)
 	return NT_EOF;
 }
 
-static t_result handle_escape(t_buffer *buf)
+static t_result handle_escape(t_line_buffer *buf)
 {
 	unsigned char seq[2];
 
@@ -98,11 +98,11 @@ static t_result handle_escape(t_buffer *buf)
 	return NT_CONTINUE;
 }
 
-static t_result handle_enter(t_buffer *buf, char **line)
+static t_result handle_enter(t_line_buffer *buf, char **line)
 {
 	write(STDOUT_FILENO, "\n", 1);
 
-	*line = nt_buffer_take(buf);
+	*line = nt_line_buffer_take(buf);
 	if (*line == NULL)
 		return NT_ERROR;
 
@@ -113,7 +113,7 @@ char *nt_readline(const char *prompt)
 {
 	unsigned char c;
 	ssize_t       n;
-	t_buffer      buf;
+	t_line_buffer buf;
 	char         *line;
 	t_result      res;
 
@@ -127,7 +127,7 @@ char *nt_readline(const char *prompt)
 	printf("%s", prompt);
 	fflush(stdout);
 
-	if (nt_buffer_init(&buf) == -1) {
+	if (nt_line_buffer_init(&buf) == -1) {
 		nt_term_restore();
 		return NULL;
 	}
@@ -154,6 +154,6 @@ char *nt_readline(const char *prompt)
 	}
 
 	nt_term_restore();
-	nt_buffer_free(&buf);
+	nt_line_buffer_free(&buf);
 	return line;
 }

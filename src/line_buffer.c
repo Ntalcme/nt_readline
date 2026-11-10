@@ -1,11 +1,11 @@
-#include "buffer.h"
+#include "line_buffer.h"
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define NT_BUF_INIT_CAP 64
 
-int nt_buffer_init(t_buffer *buf)
+int nt_line_buffer_init(t_line_buffer *buf)
 {
 	char  *data;
 	size_t data_cap;
@@ -23,7 +23,7 @@ int nt_buffer_init(t_buffer *buf)
 	return 0;
 }
 
-char *nt_buffer_take(t_buffer *buf)
+char *nt_line_buffer_take(t_line_buffer *buf)
 {
 	char *str;
 
@@ -37,7 +37,7 @@ char *nt_buffer_take(t_buffer *buf)
 	return str;
 }
 
-void nt_buffer_free(t_buffer *buf)
+void nt_line_buffer_free(t_line_buffer *buf)
 {
 	free(buf->data);
 	buf->data       = NULL;
@@ -46,7 +46,7 @@ void nt_buffer_free(t_buffer *buf)
 	buf->cursor_pos = 0;
 }
 
-int nt_buffer_insert(t_buffer *buf, const char c)
+int nt_line_buffer_insert(t_line_buffer *buf, const char c)
 {
 	char  *new_data;
 	size_t new_cap;
@@ -70,7 +70,7 @@ int nt_buffer_insert(t_buffer *buf, const char c)
 	return 0;
 }
 
-void nt_buffer_delete(t_buffer *buf)
+void nt_line_buffer_delete(t_line_buffer *buf)
 {
 	if (buf->cursor_pos == 0)
 		return;
