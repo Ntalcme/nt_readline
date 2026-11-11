@@ -9,11 +9,13 @@
 #define NT_CURSOR_RIGHT NT_CSI "C"
 #define NT_ERASE_TO_EOL NT_CSI "K"
 
+/** @brief Write len bytes of s to stdout. */
 static void put(const char *s, size_t len)
 {
 	write(STDOUT_FILENO, s, len);
 }
 
+/** @brief Write the string s to stdout. */
 static void put_str(const char *s)
 {
 	put(s, strlen(s));

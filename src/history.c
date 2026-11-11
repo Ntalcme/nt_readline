@@ -7,6 +7,7 @@
 static t_line_memory lines_memory;
 static int           lines_memory_ready;
 
+/** @brief Return the history, initializing it on first use. */
 static t_line_memory *get_memory(void)
 {
 	if (!lines_memory_ready) {
@@ -17,6 +18,7 @@ static t_line_memory *get_memory(void)
 	return &lines_memory;
 }
 
+/** @brief Return a malloc'd '\0'-terminated copy of buf, or NULL. */
 static char *dup_buffer(const t_line_buffer *buf)
 {
 	char *copy;
@@ -30,6 +32,7 @@ static char *dup_buffer(const t_line_buffer *buf)
 	return copy;
 }
 
+/** @brief Replace buf with str and redraw the line. */
 static t_result replace_line(t_line_buffer *buf, const char *str)
 {
 	size_t old;

@@ -13,6 +13,7 @@
 #define NT_ARROW_RIGHT 'C'
 #define NT_ARROW_LEFT  'D'
 
+/** @brief Insert a printable char and redraw. */
 static t_result handle_printable(t_line_buffer *buf, unsigned char c)
 {
 	if (nt_line_buffer_insert(buf, c) == -1)
@@ -22,6 +23,7 @@ static t_result handle_printable(t_line_buffer *buf, unsigned char c)
 	return NT_CONTINUE;
 }
 
+/** @brief Delete the char before the cursor and redraw. */
 static t_result handle_backspace(t_line_buffer *buf)
 {
 	if (buf->cursor_pos == 0)
@@ -32,6 +34,7 @@ static t_result handle_backspace(t_line_buffer *buf)
 	return NT_CONTINUE;
 }
 
+/** @brief Return NT_EOF on an empty line, else ignore. */
 static t_result handle_ctrl_d(const t_line_buffer *buf)
 {
 	/* Ctrl+D on a non-empty line is ignored */
@@ -42,6 +45,7 @@ static t_result handle_ctrl_d(const t_line_buffer *buf)
 	return NT_EOF;
 }
 
+/** @brief Handle an arrow-key escape sequence. */
 static t_result handle_escape(t_line_buffer *buf, t_nav *nav)
 {
 	unsigned char seq[2];
@@ -82,6 +86,7 @@ static t_result handle_escape(t_line_buffer *buf, t_nav *nav)
 	return res;
 }
 
+/** @brief Take the line out of buf and add it to the history. */
 static t_result handle_enter(t_line_buffer *buf, char **line)
 {
 	nt_display_newline();
