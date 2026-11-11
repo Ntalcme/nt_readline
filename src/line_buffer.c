@@ -81,3 +81,28 @@ void nt_line_buffer_delete(t_line_buffer *buf)
 	buf->len--;
 	buf->cursor_pos--;
 }
+
+int nt_line_buffer_set(t_line_buffer *buf, const char *str)
+{
+	char  *new_data;
+	size_t new_cap;
+	size_t len;
+
+	len     = strlen(str);
+	new_cap = buf->cap;
+	while (len + 1 >= new_cap)
+		new_cap *= 2;
+
+	if (new_cap != buf->cap) {
+		new_data = realloc(buf->data, new_cap);
+		if (new_data == NULL)
+			return -1;
+		buf->data = new_data;
+		buf->cap  = new_cap;
+	}
+
+	memcpy(buf->data, str, len);
+	buf->len        = len;
+	buf->cursor_pos = len;
+	return 0;
+}

@@ -15,5 +15,6 @@ char *nt_line_buffer_take(t_line_buffer *buf);
 void  nt_line_buffer_free(t_line_buffer *buf);
 int   nt_line_buffer_insert(t_line_buffer *buf, const char c);
 void  nt_line_buffer_delete(t_line_buffer *buf);
+int   nt_line_buffer_set(t_line_buffer *buf, const char *str);
 
 #endif
